@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en" data-app-ready="false" data-result-state="empty">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A bounded executable lesson for GPV lattice identity-based encryption, trapdoor preimage sampling, and its toy-parameter boundary."
+    />
+    <title>Lattice IBE — Crypto Lab</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to the lesson</a>
+    <header class="hero">
+      <div class="shell">
+        <a class="back" href="https://crypto-lab.systemslibrarian.dev/">Crypto Lab catalog</a>
+        <p class="eyebrow">L-R-12 · research extension</p>
+        <h1>Lattice IBE</h1>
+        <p class="lede">
+          Turn an identity into a public lattice syndrome, use a master trapdoor to sample its
+          private preimage, then encrypt and decrypt one bit with the GPV dual-LWE equations.
+        </p>
+        <div class="boundary" role="note">
+          <strong>Mechanism toy, not secure parameters.</strong>
+          This page executes GPV's algebra at dimension four. It deliberately fails the paper's
+          asymptotic parameter conditions, and a public bounded search recovers a working key.
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="shell" tabindex="-1">
+      <section class="panel controls" aria-labelledby="run-heading">
+        <div>
+          <p class="step">Current run</p>
+          <h2 id="run-heading">Choose exact identity bytes</h2>
+          <p>
+            The profile accepts 1–96 printable ASCII characters without spaces. It does not
+            normalize case, aliases, or Unicode; those enrollment questions sit outside the construction.
+          </p>
+        </div>
+        <form id="scenario-form">
+          <div class="field-grid">
+            <label>
+              Recipient identity
+              <input id="identity" name="identity" value="alice@example.edu" autocomplete="off" />
+            </label>
+            <label>
+              Comparison identity
+              <input id="other-identity" name="otherIdentity" value="bob@example.edu" autocomplete="off" />
+            </label>
+            <label>
+              Message bit
+              <select id="message-bit" name="bit">
+                <option value="0">0</option>
+                <option value="1" selected>1</option>
+              </select>
+            </label>
+            <label>
+              Reproducible teaching seed
+              <input id="seed" name="seed" value="gpv-classroom-01" autocomplete="off" />
+            </label>
+          </div>
+          <button id="run" type="submit">Run the complete profile</button>
+          <p id="run-status" class="run-status" role="status" aria-live="polite">
+            Preparing the initial run.
+          </p>
+        </form>
+      </section>
+
+      <div id="results" hidden>
+        <section class="panel" aria-labelledby="identity-heading">
+          <p class="step">1 · Public address</p>
+          <h2 id="identity-heading">Identity → SHA-256 → syndrome</h2>
+          <p>
+            GPV §7.2 models this map as a random oracle. This bounded profile instead uses a
+            named SHA-256 domain and unbiased 16-bit rejection sampling; that is executable,
+            deterministic, and not a proof-preserving random-oracle instantiation.
+          </p>
+          <dl class="metrics">
+            <div><dt>Exact UTF-8 bytes</dt><dd data-host="identity-bytes"></dd></div>
+            <div><dt>First SHA-256 block</dt><dd><code data-host="identity-digest"></code></dd></div>
+            <div><dt>Syndrome u</dt><dd><code data-host="syndrome"></code></dd></div>
+            <div><dt>Rejected 16-bit words</dt><dd data-host="hash-rejections"></dd></div>
+          </dl>
+        </section>
+
+        <section class="panel" aria-labelledby="extract-heading">
+          <p class="step">2 · Central extraction</p>
+          <h2 id="extract-heading">SampleISIS finds e with A e = u mod q</h2>
+          <p>
+            The authority solves for one coset representative, then runs GPV's randomized
+            nearest-plane SampleD over the secret short basis. Repeated extraction returns the
+            cached key, as the stateful extractor in GPV §7.2 requires.
+          </p>
+          <div class="equation" aria-label="Public matrix times private key equals identity syndrome">
+            A · e = u (mod 4093)
+          </div>
+          <div class="two-column">
+            <div>
+              <h3>Public matrix A</h3>
+              <pre data-host="public-matrix"></pre>
+            </div>
+            <details>
+              <summary>Omniscient teaching view: master trapdoor T</summary>
+              <p>The public-search control below does not receive this basis.</p>
+              <pre data-host="trapdoor-basis"></pre>
+            </details>
+          </div>
+          <dl class="metrics">
+            <div><dt>Arbitrary representative t</dt><dd><code data-host="representative"></code></dd></div>
+            <div><dt>Sampled kernel vector v</dt><dd><code data-host="lattice-vector"></code></dd></div>
+            <div><dt>Extracted private key e=t+v</dt><dd><code data-host="private-key"></code></dd></div>
+            <div><dt>Independent relation</dt><dd><code data-host="key-relation"></code></dd></div>
+            <div><dt>Key norm</dt><dd data-host="key-norm"></dd></div>
+            <div><dt>Second request</dt><dd data-host="cache-result"></dd></div>
+          </dl>
+          <div class="table-wrap">
+            <table>
+              <caption>SampleD rounds, executed from basis row 4 down to row 1</caption>
+              <thead>
+                <tr><th scope="col">Row</th><th scope="col">||b*||</th><th scope="col">c′</th><th scope="col">r′</th><th scope="col">z</th><th scope="col">tries</th></tr>
+              </thead>
+              <tbody data-host="sample-rounds"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="cipher-heading">
+          <p class="step">3 · Dual-LWE encryption</p>
+          <h2 id="cipher-heading">One bit, current-run arithmetic</h2>
+          <p>
+            The sender uses only public A and u. The error samples here are centered-binomial
+            teaching values, not the paper's discretized normal distribution.
+          </p>
+          <div class="equation">p = Aᵀs + x &nbsp; · &nbsp; c = uᵀs + x′ + b⌊q/2⌋</div>
+          <dl class="metrics">
+            <div><dt>Uniform secret s</dt><dd><code data-host="encryption-secret"></code></dd></div>
+            <div><dt>Error x; scalar x′</dt><dd><code data-host="encryption-errors"></code></dd></div>
+            <div><dt>Ciphertext p; c</dt><dd><code data-host="ciphertext"></code></dd></div>
+            <div><dt>c − eᵀp mod q</dt><dd data-host="phase"></dd></div>
+            <div><dt>Residual, two routes</dt><dd><code data-host="residual"></code></dd></div>
+          </dl>
+          <div class="verdict" data-host="decrypt-verdict" data-outcome="pending"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="controls-heading">
+          <p class="step">4 · Failure and boundary controls</p>
+          <h2 id="controls-heading">What the successful round trip does not prove</h2>
+          <div class="control-grid">
+            <article class="control-card" data-control="public-search">
+              <h3>Public toy search</h3>
+              <p data-host="public-search-copy"></p>
+              <p class="control-result" data-host="public-search-result"></p>
+            </article>
+            <article class="control-card" data-control="changed-identity">
+              <h3>Changed identity</h3>
+              <p data-host="changed-identity-copy"></p>
+              <p class="control-result" data-host="changed-identity-result"></p>
+            </article>
+            <article class="control-card" data-control="mutated-key">
+              <h3>One-coordinate key mutation</h3>
+              <p data-host="mutated-key-copy"></p>
+              <p class="control-result" data-host="mutated-key-result"></p>
+            </article>
+            <article class="control-card" data-control="wrong-identity">
+              <h3>Wrong identity key</h3>
+              <p data-host="wrong-identity-copy"></p>
+              <p class="control-result" data-host="wrong-identity-result"></p>
+            </article>
+            <article class="control-card" data-control="oversized-error">
+              <h3>Oversized error</h3>
+              <p data-host="oversized-copy"></p>
+              <p class="control-result" data-host="oversized-result"></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="parameter-heading">
+          <p class="step">5 · Parameter boundary</p>
+          <h2 id="parameter-heading">The theorem hypotheses are not decorative</h2>
+          <p>
+            Exact algebraic invariants can pass while security prerequisites fail. “Post-quantum”
+            applies to the source construction under its LWE/SIS assumptions and parameters, not
+            automatically to this four-dimensional run.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <caption>Current profile against the conditions it actually uses or omits</caption>
+              <thead><tr><th scope="col">Check</th><th scope="col">Current value</th><th scope="col">Verdict</th></tr></thead>
+              <tbody data-host="parameter-ledger"></tbody>
+            </table>
+          </div>
+          <div class="boundary standards">
+            <strong>Deployment status.</strong>
+            NIST's current PQC portfolio standardizes/selects KEM and signature algorithms. This
+            GPV IBE profile is not an approved deployment scheme, and ML-KEM does not replace an
+            authority that extracts keys from identities or policies. NIST's FIPS 203 page carries
+            a November 17, 2025 potential-update notice; this lesson relies only on its classification
+            of ML-KEM as a KEM, not on an affected algorithm detail.
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="comparison-heading">
+          <p class="step">6 · Interface comparison</p>
+          <h2 id="comparison-heading">Same escrow question, different algebra</h2>
+          <div class="table-wrap comparison-table">
+            <table>
+              <caption>GPV beside the existing BasicIdent and FAME lessons</caption>
+              <thead><tr><th scope="col">System</th><th scope="col">Address</th><th scope="col">Extraction</th><th scope="col">Encryption</th><th scope="col">Trust and status</th></tr></thead>
+              <tbody data-host="comparison"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel sources" aria-labelledby="sources-heading">
+        <p class="step">Sources and retained limits</p>
+        <h2 id="sources-heading">Read the construction, then read the caveats</h2>
+        <ul>
+          <li><a href="https://people.csail.mit.edu/cpeikert/pubs/trap_lattice.pdf">GPV 2008 full paper</a>: §§4, 5.3 and 7 are the implemented source.</li>
+          <li><a href="https://crypto.stanford.edu/~dabo/pubs/papers/latticebb.pdf">Agrawal–Boneh–Boyen 2010 full paper</a>: the unimplemented standard-model comparison.</li>
+          <li><a href="https://doi.org/10.1007/978-3-030-71522-9_1464">Post-quantum IBE and ABE encyclopedia entry</a>.</li>
+          <li><a href="https://csrc.nist.gov/projects/post-quantum-cryptography/post-quantum-cryptography-standardization/selected-algorithms">NIST PQC selected algorithms</a> and <a href="https://csrc.nist.gov/pubs/fips/203/final">FIPS 203, including its potential-updates notice</a>.</li>
+          <li><a href="https://systemslibrarian.github.io/crypto-lab-ggh-trapdoor/">GGH Trapdoor</a> for good-basis intuition.</li>
+        </ul>
+        <p>
+          Not implemented: secure TrapGen, production dimensions, a concrete estimator, QROM or CCA
+          security, authenticated encryption, ABE policies, key enrollment, revocation, constant-time
+          arithmetic, or a deployment profile. The deterministic seed is for reproducibility only.
+        </p>
+      </section>
+    </main>
+
+    <footer class="shell">
+      <p>A browser lesson in the Crypto Lab collection. No server and no retained learner data.</p>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
