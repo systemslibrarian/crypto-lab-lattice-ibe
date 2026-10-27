@@ -8,13 +8,12 @@ import {
   type DualCiphertext,
 } from './ibe.ts';
 import { SeededRandom } from './random.ts';
+import { publicPreimageSearch, type PublicSearchResult } from './attack.ts';
 import {
   profileEvidence,
-  publicPreimageSearch,
   samplePreimage,
   type PreimageSample,
   type ProfileEvidence,
-  type PublicSearchResult,
 } from './trapdoor.ts';
 
 export interface ScenarioInput {

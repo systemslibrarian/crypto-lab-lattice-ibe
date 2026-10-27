@@ -76,11 +76,11 @@ const mutations = [
   },
   {
     name: 'public search adds instead of subtracting the right contribution',
-    file: 'src/trapdoor.ts',
+    file: 'src/attack.ts',
     from: 'mod(normalizedSyndrome[0]! - right[0]!, Q),',
     to: 'mod(normalizedSyndrome[0]! + right[0]!, Q),',
-    suite: 'src/trapdoor.test.ts',
-    test: 'finds a toy preimage without receiving the trapdoor',
+    suite: 'src/attack.test.ts',
+    test: 'finds and independently verifies a toy key from public inputs',
   },
   {
     name: 'dual ciphertext p subtracts its error vector',

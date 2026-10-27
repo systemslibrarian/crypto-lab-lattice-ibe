@@ -5,7 +5,6 @@ import { GAUSSIAN_R, PUBLIC_MATRIX, Q, TRAPDOOR_BASIS } from './params.ts';
 import {
   arbitraryPreimage,
   profileEvidence,
-  publicPreimageSearch,
   relationMatches,
   sampleD,
   sampleIntegerGaussian,
@@ -93,21 +92,4 @@ describe('fixed q-ary trapdoor profile', () => {
     expect(first.keyNorm).toBeGreaterThan(0);
   });
 
-  it('finds a toy preimage without receiving the trapdoor', async () => {
-    const { syndrome } = await identityToSyndrome('alice@example.edu');
-    const attack = publicPreimageSearch(syndrome, 64);
-    expect(attack.key).not.toBeNull();
-    expect(attack.matches).toBeGreaterThan(0);
-    expect(attack.operations).toBe(2 * 129 * 129);
-    expect(attack.relation).toEqual(syndrome);
-    expect(relationMatches(attack.key ?? [], syndrome)).toBe(true);
-    expect(() => publicPreimageSearch(syndrome, 0)).toThrow(/PUBLIC_SEARCH_BOUND/);
-    expect(() => publicPreimageSearch(syndrome, 129)).toThrow(/PUBLIC_SEARCH_BOUND/);
-    expect(() => publicPreimageSearch(syndrome, 1.5)).toThrow(/PUBLIC_SEARCH_BOUND/);
-    expect(() => publicPreimageSearch([1], 1)).toThrow(/SYNDROME_DIMENSION/);
-    const absent = publicPreimageSearch([2000, 2000], 1);
-    expect(absent.key).toBeNull();
-    expect(absent.keyNorm).toBeNull();
-    expect(absent.relation).toBeNull();
-  });
 });
