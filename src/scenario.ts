@@ -9,6 +9,7 @@ import {
 } from './ibe.ts';
 import { SeededRandom } from './random.ts';
 import { publicPreimageSearch, type PublicSearchResult } from './attack.ts';
+import { PUBLIC_SEARCH_BOUND } from './params.ts';
 import {
   profileEvidence,
   samplePreimage,
@@ -95,7 +96,7 @@ export async function runScenario(input: ScenarioInput): Promise<ScenarioResult>
   );
   const decryption = decryptBit(extraction.key, ciphertext);
   const residual = decryptionResidual(extraction.key, ciphertext);
-  const publicSearch = publicPreimageSearch(identity.syndrome, 64);
+  const publicSearch = publicPreimageSearch(identity.syndrome, PUBLIC_SEARCH_BOUND);
   const publicSearchDecryption = publicSearch.key
     ? decryptBit(publicSearch.key, ciphertext)
     : null;
