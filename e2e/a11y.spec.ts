@@ -51,8 +51,8 @@ test('supports keyboard navigation, activation, and visible focus', async ({ pag
     .evaluate((element) => getComputedStyle(element).outlineStyle);
   expect(outline).not.toBe('none');
 
-  const scrollRegions = page.locator('.table-wrap');
-  await expect(scrollRegions).toHaveCount(3);
+  const scrollRegions = page.locator('.table-wrap, pre[tabindex="0"]');
+  await expect(scrollRegions).toHaveCount(5);
   for (let index = 0; index < await scrollRegions.count(); index += 1) {
     const region = scrollRegions.nth(index);
     await region.focus();
