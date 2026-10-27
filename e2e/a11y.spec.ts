@@ -50,6 +50,16 @@ test('supports keyboard navigation, activation, and visible focus', async ({ pag
   const outline = await page.getByRole('button', { name: 'Run the complete profile' })
     .evaluate((element) => getComputedStyle(element).outlineStyle);
   expect(outline).not.toBe('none');
+
+  const scrollRegions = page.locator('.table-wrap');
+  await expect(scrollRegions).toHaveCount(3);
+  for (let index = 0; index < await scrollRegions.count(); index += 1) {
+    const region = scrollRegions.nth(index);
+    await region.focus();
+    await expect(region).toBeFocused();
+    await expect(region).toHaveAttribute('role', 'region');
+    await expect(region).toHaveAttribute('aria-label', /\S+/);
+  }
 });
 
 test('keeps the named error state accessible', async ({ page }) => {
