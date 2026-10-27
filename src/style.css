@@ -19,7 +19,7 @@
 
 * { box-sizing: border-box; }
 html { min-width: 280px; scroll-behavior: smooth; }
-body { margin: 0; background: radial-gradient(circle at 75% 0%, #173445 0, var(--bg) 36rem); line-height: 1.6; }
+body { margin: 0; background: radial-gradient(circle at 75% 0%, #173445 0, var(--bg) 36rem); line-height: 1.6; overflow-wrap: break-word; }
 a { color: var(--accent); text-underline-offset: 0.2em; }
 a:hover { text-decoration-thickness: 0.16em; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
@@ -38,6 +38,7 @@ main { padding-block: 2rem 4rem; }
 .panel h3 { margin-bottom: 0.4rem; }
 .panel > p:not(.step) { max-width: 74ch; color: var(--muted); }
 .controls { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 1.1fr); gap: 2rem; align-items: start; }
+.controls > *, .two-column > *, form, details { min-width: 0; }
 .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
 label { display: grid; gap: 0.35rem; color: #dbe8ed; font-weight: 700; }
 input, select, button { min-height: 2.8rem; border: 2px solid #78919d; border-radius: 0.55rem; font: inherit; }
@@ -51,12 +52,12 @@ button:disabled { cursor: wait; opacity: 0.7; }
 details { padding: 0.8rem; border: 1px solid var(--border); border-radius: 0.7rem; }
 summary { cursor: pointer; font-weight: 800; }
 pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-pre { overflow-x: auto; margin: 0.5rem 0 0; padding: 0.8rem; border-radius: 0.55rem; background: #061117; color: #e9f7f2; }
+pre { max-width: 100%; overflow-x: auto; margin: 0.5rem 0 0; padding: 0.8rem; border-radius: 0.55rem; background: #061117; color: #e9f7f2; }
 .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin: 1.2rem 0; }
 .metrics > div { min-width: 0; padding: 0.8rem; border: 1px solid #385565; border-radius: 0.65rem; background: var(--surface-2); }
 dt { color: var(--muted); font-size: 0.8rem; font-weight: 750; text-transform: uppercase; letter-spacing: 0.05em; }
 dd { margin: 0.25rem 0 0; overflow-wrap: anywhere; }
-.table-wrap { width: 100%; overflow-x: auto; border: 1px solid #3d5a67; border-radius: 0.65rem; }
+.table-wrap { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid #3d5a67; border-radius: 0.65rem; }
 table { width: 100%; border-collapse: collapse; min-width: 42rem; }
 caption { padding: 0.75rem; color: var(--muted); text-align: left; font-weight: 700; }
 th, td { padding: 0.7rem; border-top: 1px solid #36515e; text-align: left; vertical-align: top; }
