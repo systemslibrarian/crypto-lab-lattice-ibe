@@ -16,7 +16,7 @@ export default defineConfig({
     { name: 'a11y', testMatch: /a11y\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: {
-    command: 'npm run preview -- --host 127.0.0.1 --port 4173',
+    command: 'npm run preview -- --host 127.0.0.1 --port 4173 --strictPort',
     url: 'http://127.0.0.1:4173/crypto-lab-lattice-ibe/',
     reuseExistingServer: false,
     timeout: 30_000,
