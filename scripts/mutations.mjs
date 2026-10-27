@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -147,13 +147,15 @@ function assertRestored() {
 function treeDigest(directory) {
   const hash = createHash('sha256');
   const visit = (path) => {
-    for (const entry of readdirSync(path).sort()) {
-      const file = join(path, entry);
-      if (statSync(file).isDirectory()) visit(file);
-      else {
+    const entries = readdirSync(path, { withFileTypes: true })
+      .sort((left, right) => left.name.localeCompare(right.name));
+    for (const entry of entries) {
+      const file = join(path, entry.name);
+      if (entry.isDirectory()) visit(file);
+      else if (entry.isFile()) {
         hash.update(relative(directory, file));
         hash.update(readFileSync(file));
-      }
+      } else throw new Error(`unsupported build artifact: ${relative(directory, file)}`);
     }
   };
   visit(directory);

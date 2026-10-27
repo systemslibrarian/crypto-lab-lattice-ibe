@@ -45,5 +45,7 @@ export class SeededRandom implements RandomSource {
 
 /** Difference of two independent bits: probabilities 1/4, 1/2, 1/4. */
 export function centeredBinomialOne(rng: RandomSource): -1 | 0 | 1 {
-  return (rng.uniformInt(0, 1) - rng.uniformInt(0, 1)) as -1 | 0 | 1;
+  const firstBit = rng.uniformInt(0, 1);
+  const secondBit = rng.uniformInt(0, 1);
+  return (firstBit - secondBit) as -1 | 0 | 1;
 }
