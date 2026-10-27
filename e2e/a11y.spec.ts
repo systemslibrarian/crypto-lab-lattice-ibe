@@ -3,6 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 async function ready(page: Page): Promise<void> {
   await page.goto('./');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('html')).toHaveAttribute('data-app-ready', 'true');
   await expect(page.locator('#results')).toBeVisible();
 }
