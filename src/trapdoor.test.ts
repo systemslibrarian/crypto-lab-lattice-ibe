@@ -26,6 +26,11 @@ describe('fixed q-ary trapdoor profile', () => {
   it('proves the basis is the complete kernel, not only four kernel vectors', () => {
     const evidence = profileEvidence();
     expect(evidence.primeModulus).toBe(true);
+    expect(evidence.publicMatrixFullRowRank).toBe(true);
+    const leftMinorDeterminant =
+      PUBLIC_MATRIX[0]![0]! * PUBLIC_MATRIX[1]![1]! -
+      PUBLIC_MATRIX[0]![1]! * PUBLIC_MATRIX[1]![0]!;
+    expect(((leftMinorDeterminant % Q) + Q) % Q).not.toBe(0);
     expect(evidence.kernelProduct).toEqual([[0, 0, 0, 0], [0, 0, 0, 0]]);
     expect(evidence.determinant < 0n ? -evidence.determinant : evidence.determinant)
       .toBe(BigInt(Q) ** 2n);

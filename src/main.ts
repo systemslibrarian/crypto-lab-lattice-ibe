@@ -52,7 +52,7 @@ function renderParameters(result: ScenarioResult): void {
   const evidence = result.profile;
   const rows: readonly (readonly [string, string, string, string])[] = [
     ['q is prime', `q = ${Q}`, evidence.primeModulus ? 'exact pass' : 'fail', evidence.primeModulus ? 'status-pass' : 'status-fail'],
-    ['T spans the full q-ary kernel', `|det T| = q^${N}; A Tᵀ = 0`, evidence.completeKernelBasis ? 'exact pass' : 'fail', evidence.completeKernelBasis ? 'status-pass' : 'status-fail'],
+    ['T spans the full q-ary kernel', `rank_q(A) = ${N}; |det T| = q^${N}; A Tᵀ = 0`, evidence.completeKernelBasis ? 'exact pass' : 'fail', evidence.completeKernelBasis ? 'status-pass' : 'status-fail'],
     ['SampleD width / max ||b*||', `${evidence.samplerRatio.toFixed(3)}×`, 'bounded mechanism; no asymptotic claim', 'status-warn'],
     ['Ajtai trapdoor-generation dimension', `m = ${M}; cited floor = ${evidence.ajtaiMinimumM}`, evidence.passesAjtaiDimension ? 'met' : 'not met', evidence.passesAjtaiDimension ? 'status-pass' : 'status-fail'],
     ['Dual-system dimension', `m = ${M}; cited floor = ${evidence.dualMinimumM}`, evidence.passesDualDimension ? 'met' : 'not met', evidence.passesDualDimension ? 'status-pass' : 'status-fail'],

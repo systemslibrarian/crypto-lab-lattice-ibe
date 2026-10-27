@@ -64,6 +64,7 @@ test('renders a fresh default run and keeps the security boundary visible', asyn
   await expect(page.locator('.boundary').first()).toContainText('Mechanism toy, not secure parameters');
   await expect(page.locator('[data-host="decrypt-verdict"]')).toContainText('Recovered bit 1');
   await expect(page.locator('[data-host="parameter-ledger"]')).toContainText('not TrapGen / not uniform');
+  await expect(page.locator('[data-host="parameter-ledger"]')).toContainText('rank_q(A) = 2');
   await expect(page.locator('[data-host="parameter-ledger"]')).toContainText('not cryptographic');
   await expect(page.getByText(/not an approved deployment scheme/)).toBeVisible();
   await expect(page.getByText(/November 17, 2025 potential-update notice/)).toBeVisible();

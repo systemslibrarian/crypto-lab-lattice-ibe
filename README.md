@@ -6,7 +6,7 @@ Live demo: <https://systemslibrarian.github.io/crypto-lab-lattice-ibe/>
 
 ## What the lesson executes
 
-The public matrix is `A in Z_q^(n x m)` with prime `q = 4093`, `n = 2`, and `m = 4`. A fixed short row basis `T` is checked at runtime and in tests: `A T^T = 0 mod q`, and `|det T| = q^n`, so it spans the complete kernel `Lambda_q^perp(A)` rather than merely a sublattice.
+The public matrix is `A in Z_q^(n x m)` with prime `q = 4093`, `n = 2`, and `m = 4`. A fixed short row basis `T` is checked at runtime and in tests: an invertible two-column minor proves `rank_q(A) = n`, `A T^T = 0 mod q`, and `|det T| = q^n`. Together those facts prove that `T` spans the complete kernel `Lambda_q^perp(A)` rather than merely a sublattice.
 
 For an identity `ID`, the profile computes a domain-separated SHA-256 stream and uses unbiased 16-bit rejection sampling to obtain `u in Z_q^n`. GPV treats the identity map as a random oracle. This concrete map is an inspectable teaching adaptation; it does not transfer the random-oracle proof to SHA-256.
 

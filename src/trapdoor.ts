@@ -56,6 +56,7 @@ export interface PreimageSample {
 
 export interface ProfileEvidence {
   readonly primeModulus: boolean;
+  readonly publicMatrixFullRowRank: boolean;
   readonly kernelProduct: readonly (readonly number[])[];
   readonly completeKernelBasis: boolean;
   readonly determinant: bigint;
@@ -82,6 +83,14 @@ export function relationMatches(vector: Vec, syndrome: Vec): boolean {
 }
 
 export function profileEvidence(): ProfileEvidence {
+  const leftBlock: Mat = PUBLIC_MATRIX.map((row) => row.slice(0, N));
+  let publicMatrixFullRowRank = false;
+  try {
+    invertTwoByTwo(leftBlock, Q);
+    publicMatrixFullRowRank = true;
+  } catch {
+    publicMatrixFullRowRank = false;
+  }
   const kernelProduct = multiplyMatrices(PUBLIC_MATRIX, transpose(TRAPDOOR_BASIS)).map((row) =>
     row.map((value) => mod(value, Q)),
   );
@@ -95,8 +104,10 @@ export function profileEvidence(): ProfileEvidence {
   const dualMinimumQ = 5 * GAUSSIAN_R * (M + 1);
   return {
     primeModulus: isPrime(Q),
+    publicMatrixFullRowRank,
     kernelProduct,
     completeKernelBasis:
+      publicMatrixFullRowRank &&
       kernelProduct.every((row) => row.every((value) => value === 0)) &&
       (determinant < 0n ? -determinant : determinant) === expectedDeterminant,
     determinant,

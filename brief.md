@@ -18,7 +18,7 @@ Do not implement Agrawal–Boneh–Boyen's 2010 standard-model HIBE in this mile
 ## Executable profile
 
 - `q=4093` (prime), `n=2`, `m=4`.
-- Fixed public `A` and a fixed short basis `T` for `Lambda_q^perp(A)`. Runtime checks prove `A T^T = 0 mod q` and `|det T| = q^n`, so `T` spans the complete q-ary kernel rather than merely a sublattice.
+- Fixed public `A` and a fixed short basis `T` for `Lambda_q^perp(A)`. Runtime checks prove an invertible two-column minor and hence `rank_q(A) = n`, together with `A T^T = 0 mod q` and `|det T| = q^n`; these facts show that `T` spans the complete q-ary kernel rather than merely a sublattice.
 - SHA-256 plus rejection sampling maps a UTF-8 identity to `u in Z_q^n`. This is a deterministic teaching instantiation, not a programmable random oracle.
 - Extraction computes an arbitrary coset representative `t`, runs GPV's randomized-nearest-plane `SampleD(T,r,-t)` with a finite `SampleZ` window, and returns `e=t+v`. Every result is checked against `Ae=u mod q`.
 - The one-dimensional sampler uses the paper's `exp(-pi (z-c)^2/s^2)` weight inside an eight-width rejection window. The finite truncation is a declared teaching adaptation; no statistical-distance bound is claimed for it.
