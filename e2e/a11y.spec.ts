@@ -51,7 +51,11 @@ test('supports keyboard navigation, activation, and visible focus', async ({ pag
     .evaluate((element) => getComputedStyle(element).outlineStyle);
   expect(outline).not.toBe('none');
 
-  await page.locator('details').click();
+  const trapdoorSummary = page.getByText('Omniscient teaching view: master trapdoor T');
+  await trapdoorSummary.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('details')).toHaveAttribute('open', '');
+  await expect(trapdoorSummary).toBeFocused();
   const scrollRegions = page.locator('.table-wrap, pre[tabindex="0"]');
   await expect(scrollRegions).toHaveCount(5);
   for (let index = 0; index < await scrollRegions.count(); index += 1) {
