@@ -61,6 +61,10 @@ function independentIdentityMap(identity: string): { digest: string; syndrome: n
 test('renders a fresh default run and keeps the security boundary visible', async ({ page }) => {
   await ready(page);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Lattice IBE');
+  await expect(page.locator('.cl-hero-sub')).toHaveText('GPV IBE · Dual-LWE · Toy Parameters');
+  await expect(page.locator('.cl-hero-why-text')).toContainText('central key escrow');
+  await expect(page.locator('.cl-hero-why-text')).toContainText('insecure parameters erase the promised protection');
+  await expect(page.locator('.scripture-footer')).toContainText('1 Corinthians 10:31');
   await expect(page.locator('.boundary').first()).toContainText('Mechanism toy, not secure parameters');
   await expect(page.locator('[data-host="decrypt-verdict"]')).toContainText('Recovered bit 1');
   await expect(page.locator('[data-host="parameter-ledger"]')).toContainText('not TrapGen / not uniform');
