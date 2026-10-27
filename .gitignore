@@ -3,4 +3,5 @@ dist/
 test-results/
 playwright-report/
 coverage/
+chat.md
 .DS_Store

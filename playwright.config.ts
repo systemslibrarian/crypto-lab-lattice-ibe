@@ -7,7 +7,8 @@ export default defineConfig({
   workers: 1,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:4173/crypto-lab-lattice-ibe/',
+    baseURL: 'http://127.0.0.1:4751/crypto-lab-lattice-ibe/',
+    colorScheme: 'dark',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
@@ -16,8 +17,8 @@ export default defineConfig({
     { name: 'a11y', testMatch: /a11y\.spec\.ts/, use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: {
-    command: 'npm run preview -- --host 127.0.0.1 --port 4173 --strictPort',
-    url: 'http://127.0.0.1:4173/crypto-lab-lattice-ibe/',
+    command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4751 --strictPort',
+    url: 'http://127.0.0.1:4751/crypto-lab-lattice-ibe/',
     reuseExistingServer: false,
     timeout: 30_000,
   },

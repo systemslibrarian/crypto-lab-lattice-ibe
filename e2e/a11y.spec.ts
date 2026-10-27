@@ -2,9 +2,13 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
 async function ready(page: Page): Promise<void> {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('./');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('html')).toHaveAttribute('data-app-ready', 'true');
+  await expect(page.locator('#app')).toHaveCount(1);
+  await expect(page.locator('[role="banner"]')).toHaveCount(1);
+  await expect(page.locator('.cl-hero-why')).toHaveCount(1);
   await expect(page.locator('#results')).toBeVisible();
 }
 
@@ -34,11 +38,11 @@ for (const viewport of [
 test('supports keyboard navigation, activation, and visible focus', async ({ page }) => {
   await ready(page);
   await page.keyboard.press('Tab');
-  const skip = page.locator('.skip-link');
+  const skip = page.locator('.cl-skip-link');
   await expect(skip).toBeFocused();
   await expect(skip).toBeVisible();
   await page.keyboard.press('Enter');
-  await expect(page.locator('#main')).toBeFocused();
+  await expect(page.locator('#app')).toBeFocused();
 
   await page.locator('#identity').focus();
   await page.keyboard.press('ControlOrMeta+A');
