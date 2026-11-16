@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { auditControlNames, formatControlNameFailures } from './control-names';
 import { expect, test, type Page } from '@playwright/test';
 
 async function ready(page: Page): Promise<void> {
@@ -25,6 +26,10 @@ for (const viewport of [
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();
     expect(scan.violations).toEqual([]);
+    // axe's `label` rule accepts a bare `placeholder` as an accessible name, so a
+    // deleted label can leave this gate green. See `control-names.ts`.
+    expect(formatControlNameFailures(await auditControlNames(page)),
+      `form controls named only by placeholder/title at ${viewport.label}`).toEqual([]);
     const dimensions = await page.evaluate(() => ({
       body: document.body.scrollWidth,
       root: document.documentElement.scrollWidth,
@@ -82,4 +87,8 @@ test('keeps the named error state accessible', async ({ page }) => {
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
     .analyze();
   expect(scan.violations).toEqual([]);
+  // axe's `label` rule accepts a bare `placeholder` as an accessible name, so a
+  // deleted label can leave this gate green. See `control-names.ts`.
+  expect(formatControlNameFailures(await auditControlNames(page)),
+    'form controls named only by placeholder/title in the named error state').toEqual([]);
 });
