@@ -188,3 +188,18 @@ test('links the claimed systems and primary publications', async ({ page }) => {
   expect(hrefs).toContain('https://systemslibrarian.github.io/crypto-lab-attribute-gate/');
   expect(await page.locator('body').innerText()).not.toMatch(/[😀-🙏]/u);
 });
+
+test('editing the identity during a calculation keeps the old result retired', async ({ page }) => {
+  await ready(page);
+  await page.locator('#identity').evaluate((input: HTMLInputElement) => {
+    const form = input.form!;
+    form.requestSubmit();
+    input.value = 'updated@example.edu';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  await expect(page.locator('#run')).toBeEnabled();
+  await expect(page.locator('html')).toHaveAttribute('data-result-state', 'stale');
+  await expect(page.locator('#results')).toBeHidden();
+  await page.locator('#run').click();
+  await expect(page.locator('#run-status')).toContainText('Fresh result for updated@example.edu');
+});

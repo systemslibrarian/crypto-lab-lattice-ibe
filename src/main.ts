@@ -197,17 +197,27 @@ for (const control of [identityInput, otherIdentityInput, bitInput, seedInput]) 
 }
 
 async function execute(input: ScenarioInput): Promise<void> {
+  const submitted = JSON.stringify(input);
+  const inputsChanged = (): boolean => {
+    if (submitted === inputFingerprint()) return false;
+    results.hidden = true;
+    document.documentElement.dataset.resultState = 'stale';
+    status.textContent = 'Inputs changed during the calculation. Run again with the current values.';
+    return true;
+  };
   runButton.disabled = true;
   form.setAttribute('aria-busy', 'true');
   status.textContent = 'Computing hash, trapdoor sample, ciphertext, controls, and independent checks.';
   try {
     const result = await runScenario(input);
+    if (inputsChanged()) return;
     render(result);
-    lastCommitted = JSON.stringify(input);
+    lastCommitted = submitted;
     results.hidden = false;
     document.documentElement.dataset.resultState = 'fresh';
     status.textContent = `Fresh result for ${input.identity}; all displayed values come from this run.`;
   } catch (error) {
+    if (inputsChanged()) return;
     results.hidden = true;
     document.documentElement.dataset.resultState = 'error';
     status.textContent = error instanceof Error ? error.message : 'The run failed.';
@@ -220,7 +230,7 @@ async function execute(input: ScenarioInput): Promise<void> {
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-  void execute(readInput());
+  if (!runButton.disabled) void execute(readInput());
 });
 
 renderComparison();
