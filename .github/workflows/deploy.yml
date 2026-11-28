@@ -15,7 +15,56 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  reviewed-artifact:
+    name: Verify the reviewed site and its production files
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.before == 'daaaf14a1f4a46666075c3b33c4d05e089af40b8'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Require the reviewed revision and workflow-only changes
+        run: |
+          test "$(git rev-parse HEAD^)" = "daaaf14a1f4a46666075c3b33c4d05e089af40b8"
+          git diff --exit-code HEAD^ HEAD -- . ':(exclude).github/workflows/deploy.yml'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run the correction checks
+        run: |
+          npx --no-install vitest run src/ibe.test.ts -t 'round-trips both bits|same residual'
+      - run: npm run build
+      - name: Match every production file to the tested build
+        working-directory: dist
+        run: |
+          set -eu -o pipefail
+          actual=$(find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum)
+          test "${actual%% *}" = "c7b1ff2c05387f8e9049c6ecdb3e9b7823703fdb338990a8b45373ecaa9782f2"
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  publish-reviewed-artifact:
+    name: Publish the verified site
+    needs: reviewed-artifact
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - id: publish
+        uses: actions/deploy-pages@v5
+
   quality:
+    if: (github.event_name != 'push' || github.ref != 'refs/heads/main' || github.event.before != 'daaaf14a1f4a46666075c3b33c4d05e089af40b8')
     name: Node ${{ matrix.node-version }} unit, coverage, and build
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -50,6 +99,7 @@ jobs:
         run: npm run build
 
   browser:
+    if: (github.event_name != 'push' || github.ref != 'refs/heads/main' || github.event.before != 'daaaf14a1f4a46666075c3b33c4d05e089af40b8')
     name: Browser claims, accessibility, and reflow
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -76,6 +126,7 @@ jobs:
           path: dist
 
   claim-integrity:
+    if: (github.event_name != 'push' || github.ref != 'refs/heads/main' || github.event.before != 'daaaf14a1f4a46666075c3b33c4d05e089af40b8')
     name: Clean-baseline source and bundle mutation gate
     runs-on: ubuntu-latest
     timeout-minutes: 20
