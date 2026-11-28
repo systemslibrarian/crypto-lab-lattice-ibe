@@ -25,6 +25,8 @@ Extraction follows GPV `SampleISIS`:
 2. Run randomized nearest plane `SampleD(T, r, -t)` with the GPV one-dimensional weight `exp(-pi (z-c)^2 / s^2)`.
 3. Return `e = t + v` and verify `A e = u mod q`.
 
+The public relation checks the modular equation. Adding `q` to a coordinate preserves that equation while changing the vector’s length. The sampler uses floating-point weights and truncates each integer draw to eight widths around its center. The fixed width ratio gives no asymptotic distribution guarantee. [Worked classroom example](https://crypto-lab.systemslibrarian.dev/learn/student-corrections/#lattice-ibe)
+
 The extractor caches the first sampled key for each exact identity, matching the stateful extractor described in GPV section 7.2. A newly initialized authority can return another valid preimage for the same syndrome.
 
 ## When to Use It
