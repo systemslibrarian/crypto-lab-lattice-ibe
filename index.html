@@ -242,10 +242,11 @@
             <div><dt>Arbitrary representative t</dt><dd><code data-host="representative"></code></dd></div>
             <div><dt>Sampled kernel vector v</dt><dd><code data-host="lattice-vector"></code></dd></div>
             <div><dt>Extracted private key e=t+v</dt><dd><code data-host="private-key"></code></dd></div>
-            <div><dt>Independent relation</dt><dd><code data-host="key-relation"></code></dd></div>
+            <div><dt>Public preimage equation</dt><dd><code data-host="key-relation"></code></dd></div>
             <div><dt>Key norm</dt><dd data-host="key-norm"></dd></div>
             <div><dt>Second request</dt><dd data-host="cache-result"></dd></div>
           </dl>
+          <p>The public equation checks that the vector maps to the identity’s syndrome. It cannot certify the vector’s length or the probability distribution that produced it.</p>
           <div class="table-wrap" role="region" aria-label="SampleD round details" tabindex="0">
             <table>
               <caption>SampleD rounds, executed from basis row 4 down to row 1</caption>
@@ -349,7 +350,7 @@
         <p class="step">Sources and retained limits</p>
         <h2 id="sources-heading">Read the construction, then read the caveats</h2>
         <ul>
-          <li><a href="https://people.csail.mit.edu/cpeikert/pubs/trap_lattice.pdf">GPV 2008 full paper</a>: §§4, 5.3 and 7 are the implemented source.</li>
+          <li><a href="https://people.csail.mit.edu/cpeikert/pubs/trap_lattice.pdf">How to Use a Short Basis: Trapdoors for Hard Lattices and New Cryptographic Constructions</a> (GPV 2008, full version): §§4, 5.3 and 7 are the implemented source.</li>
           <li><a href="https://crypto.stanford.edu/~dabo/pubs/papers/latticebb.pdf">Agrawal–Boneh–Boyen 2010 full paper</a>: the unimplemented standard-model comparison.</li>
           <li><a href="https://doi.org/10.1007/978-3-030-71522-9_1464">Post-quantum IBE and ABE encyclopedia entry</a>.</li>
           <li><a href="https://csrc.nist.gov/projects/post-quantum-cryptography/post-quantum-cryptography-standardization/selected-algorithms">NIST PQC selected algorithms</a> and <a href="https://csrc.nist.gov/pubs/fips/203/final">FIPS 203, including its potential-updates notice</a>.</li>

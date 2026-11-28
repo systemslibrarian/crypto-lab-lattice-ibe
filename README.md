@@ -95,7 +95,7 @@ The public attack is intentionally bounded and practical only because the profil
 
 ## Primary Sources and Versions
 
-- Craig Gentry, Chris Peikert, and Vinod Vaikuntanathan, “Trapdoors for Hard Lattices and New Cryptographic Constructions,” STOC 2008, author-hosted full version, especially sections 2.5, 4.1–4.2, 5.3.1–5.3.2, and 7.1–7.2: <https://people.csail.mit.edu/cpeikert/pubs/trap_lattice.pdf>
+- Craig Gentry, Chris Peikert, and Vinod Vaikuntanathan, “How to Use a Short Basis: Trapdoors for Hard Lattices and New Cryptographic Constructions,” author-hosted full version of the STOC 2008 paper, especially sections 2.5, 4.1–4.2, 5.3.1–5.3.2, and 7.1–7.2: <https://people.csail.mit.edu/cpeikert/pubs/trap_lattice.pdf>
 - Shweta Agrawal, Dan Boneh, and Xavier Boyen, “Efficient Lattice (H)IBE in the Standard Model,” EUROCRYPT 2010 full version, sections 4–7: <https://crypto.stanford.edu/~dabo/pubs/papers/latticebb.pdf>. This source delimits the unimplemented standard-model HIBE route; the lab does not claim its FRD encoding or `SampleLeft`/`SampleRight` algorithms.
 - Xavier Boyen, “Post-quantum Identity-Based Encryption and Attribute-Based Encryption,” *Encyclopedia of Cryptography, Security and Privacy*, DOI `10.1007/978-3-030-71522-9_1464`, source PDF original pages 4580–4584: <https://doi.org/10.1007/978-3-030-71522-9_1464>
 - NIST, Post-Quantum Cryptography selected algorithms: <https://csrc.nist.gov/projects/post-quantum-cryptography/post-quantum-cryptography-standardization/selected-algorithms>
